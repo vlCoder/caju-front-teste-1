@@ -1,35 +1,79 @@
+import { LoadingDots } from "~/components/Loading";
+import { Registration, RegistrationStatus } from "~/types/registration";
 
 import * as S from "./styles";
-import RegistrationCard from "../RegistrationCard";
+import RegistrationCard, {
+  EmptyStateRegistrationCard,
+} from "../RegistrationCard";
 
-const allColumns = [
-  { status: 'REVIEW', title: "Pronto para revisar" },
-  { status: 'APPROVED', title: "Aprovado" },
-  { status: 'REPROVED', title: "Reprovado" },
+interface ColumnProps {
+  status: RegistrationStatus;
+  title: string;
+  ariaLabel?: string;
+}
+
+const allColumns: ColumnProps[] = [
+  {
+    status: RegistrationStatus.REVIEW,
+    title: "Pronto para revisar",
+    ariaLabel: "review",
+  },
+  {
+    status: RegistrationStatus.APPROVED,
+    title: "Aprovado",
+    ariaLabel: "approved",
+  },
+  {
+    status: RegistrationStatus.REPROVED,
+    title: "Reprovado",
+    ariaLabel: "reproved",
+  },
 ];
 
-type Props = {
-  registrations?: any[];
+const filterByStatus = (status: RegistrationStatus) => {
+  return (registration: Registration) => {
+    return registration.status === status;
+  };
 };
-const Collumns = (props: Props) => {
+
+type Props = {
+  registrations?: Registration[];
+  loading?: boolean;
+};
+
+const Collumns = ({ registrations, loading = false }: Props) => {
   return (
     <S.Container>
       {allColumns.map((collum) => {
         return (
-          <S.Column status={collum.status} key={collum.title}>
+          <S.Column
+            $status={collum.status}
+            key={collum.title}
+            aria-label={collum.ariaLabel}
+          >
             <>
-              <S.TitleColumn status={collum.status}>
+              <S.TitleColumn $status={collum.status}>
                 {collum.title}
+                {loading && <LoadingDots />}
               </S.TitleColumn>
               <S.CollumContent>
-                {props?.registrations?.map((registration) => {
-                  return (
-                    <RegistrationCard
-                      data={registration}
-                      key={registration.id}
-                    />
-                  );
-                })}
+                {loading === true && <RegistrationCard isLoading={loading} />}
+                {loading === false &&
+                  registrations?.filter(filterByStatus(collum.status))
+                    .length === 0 && (
+                    <EmptyStateRegistrationCard status={collum.status} />
+                  )}
+                {loading === false &&
+                  registrations
+                    ?.filter(filterByStatus(collum.status))
+                    .map((registration) => {
+                      return (
+                        <RegistrationCard
+                          data={registration}
+                          key={registration.id}
+                        />
+                      );
+                    })}
               </S.CollumContent>
             </>
           </S.Column>

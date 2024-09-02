@@ -1,8 +1,17 @@
 import { HashRouter, Redirect, Route, Switch } from "react-router-dom";
+<<<<<<< HEAD
 import routes from "./routes";
 import DashboardPage from "~/pages/Dashboard";
 import NewUserPage from "~/pages/NewUser";
 
+=======
+
+import DashboardPage from "~/pages/Dashboard";
+import NewUserPage from "~/pages/NewUser";
+
+import routes from "./routes";
+
+>>>>>>> feature/studys
 const Router = () => {
   return (
     <div style={{ marginTop: 64 }}>
@@ -25,4 +34,8 @@ const Router = () => {
   );
 };
 
+<<<<<<< HEAD
 export default Router;
+=======
+export default Router;
+>>>>>>> feature/studys
